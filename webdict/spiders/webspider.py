@@ -9,6 +9,7 @@ from scrapy.linkextractors import LinkExtractor
 import enchant
 import urlparse
 import os
+import shutil
 
 '''
 [HELP]  scrapy crawl tzc -a start_url=http://www.hzxh.gov.cn -a num=100 --nolog
@@ -55,6 +56,10 @@ class testSpider(Spider):
 			print 'year:',self.list_year
 			print 'email:',self.list_email
 
+
+			if os.path.exists("./"+self.domain):       #delete file
+				shutil.rmtree("./"+self.domain)
+
 			os.mkdir('./'+self.domain)
 
 			f_abbr=open(self.domain+'/abbr.txt','a')
@@ -97,7 +102,7 @@ class testSpider(Spider):
 				res_year=r'[1][9][9][0-9]{2}|[2][0][0-9]{2}'                     
 				res_abbr=r'[a-zA-Z]{3,14}'
 				res_name=r'((?:[A-Za-z][a,e,h,u,i,o]{1,4}){2,3})[^a-zA-Z]'
-				res_email=r'(\w{1,20})@\w{1,10}\.\w{1,10}'
+				res_email=r'(\w{1,20}@\w{1,10}\.\w{1,10}\.?\w*)'
 
 				p_year=re.compile(res_year)
 				self.list_year=list(set(self.list_year+list(set(p_year.findall(content)))))
